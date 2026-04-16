@@ -1,0 +1,4 @@
+User: Hello
+AI: Hi there!
+User: How are you?
+AI: I am functioning within normal parameters.
