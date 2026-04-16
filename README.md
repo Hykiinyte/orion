@@ -1,1 +1,1 @@
-ai but i make it locally or something
+ai but i make it locally or something so i have my personal jarvis yk
