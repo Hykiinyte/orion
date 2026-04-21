@@ -1,6 +1,8 @@
 import numpy as np
 import os
 import glob
+import pdfplumber
+from docx import Document
 import collections
 os.environ["CUDA_PATH"] = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.2\\bin" # path for redundancy
 try: # try to use CuPy for gpu accel, otherwise use NumPy for cpu
@@ -64,7 +66,7 @@ class BPETokenizer: #tokenizer
         """Learns the BPE merges from raw text."""
         # 1. Start with raw bytes (0-tokenidcount)
         # This ensures we can handle ANY character, even emojis
-        ids = list(text.encode("utf-8")) # 67 :D as the kids say
+        ids = list(text.encode("utf-8")) # 67 as the kids say
         num_merges = vocab_size - tokenidcount
         
         # Initialize base vocab (0-tokenidcount)
@@ -125,10 +127,28 @@ tokenizer = BPETokenizer()
 # Load ALL text data into one giant string for training the tokenizer
 print("Reading files for BPE training...")
 full_text_data = ""
-files = sorted(glob.glob(os.path.join('training_data', 'text', '*.txt')))
-for filename in files:
-    with open(filename, 'r', encoding='utf-8') as f:
-        full_text_data += f.read() + "\n"
+files = sorted(glob.glob(os.path.join('training_data', 'text', '*.txt')) +
+               glob.glob(os.path.join('training_data', 'text', '*.docx')) +
+               glob.glob(os.path.join('training_data', 'text', '*.pdf')))
+
+for filename in files: # support txt, docx, pdf for training data
+    try:
+        if filename.endswith('.txt'):
+            with open(filename, 'r', encoding='utf-8') as f:
+                full_text_data += f.read() + "\n"
+        elif filename.endswith('.docx'):
+            doc = Document(filename)
+            for para in doc.paragraphs:
+                full_text_data += para.text + "\n"
+        elif filename.endswith('.pdf'):
+            with open(filename, 'rb') as f:
+                pdf_reader = pdfplumber.open(f)
+                for page in pdf_reader.pages:
+                    full_text_data += page.extract_text() + "\n"
+        print(f"Loaded: {filename}")
+    except Exception as e:
+        print(f"Error loading {filename}: {e}")
+        continue  # Skip problematic files
 
 # target_vocab_size: higher = smarter but more RAM
 target_vocab_size = 2000 # 2000 good for testing, 5000+ better
@@ -210,12 +230,12 @@ def lossFun(inputs, targets, hprev):
         
         # Prediction
         ys[t] = xp.dot(Why, hs[t]) + by
-        try:
-            ps[t] = xp.exp(ys[t]) / xp.sum(xp.exp(ys[t])) # Softmax probability
-        except OverflowError: # if too big
-            shifted = ys[t] - xp.max(ys[t])
-            exp_scores = xp.exp(shifted)
-            ps[t] = exp_scores / xp.sum(exp_scores)
+        # Clip logits to prevent overflow in softmax, increse clip bounds from 500 for bigger stuff
+        ys[t] = xp.clip(ys[t], -500, 500)
+        # Stable softmax
+        shifted = ys[t] - xp.max(ys[t])
+        exp_scores = xp.exp(shifted)
+        ps[t] = exp_scores / xp.sum(exp_scores)
 
         loss += -xp.log(ps[t][targets[t],0]) # Cross-entropy loss
 
@@ -285,7 +305,8 @@ while True:
         for i in range(200):
             h = xp.tanh(xp.dot(Wxh, x) + xp.dot(Whh, h) + bh)
             y = xp.dot(Why, h) + by
-
+            # Clip logits to prevent overflow
+            y = xp.clip(y, -500, 500)
             shifted_y = y - xp.max(y)
             exp_scores = xp.exp(shifted_y)
             p_dist = exp_scores / xp.sum(exp_scores)
