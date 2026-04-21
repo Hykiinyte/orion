@@ -1,20 +1,23 @@
 import numpy as np
 import os
 import glob
+import collections
 os.environ["CUDA_PATH"] = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.2\\bin" # path for redundancy
-try:
+try: # try to use CuPy for gpu accel, otherwise use NumPy for cpu
     import cupy as cp
     cupy_available = True
 except (ImportError, FileNotFoundError):
     cp = None
     cupy_available = False
     if ImportError:
-        print("CuPy library not found. GPU acceleration will be disabled.")
+        Warning("CuPy library not found. GPU acceleration will be disabled.")
     elif FileNotFoundError:
-        print("CuPy installation found but no compatible GPU detected. GPU acceleration will be disabled.")
+        Warning("CuPy installation found but no compatible GPU detected. GPU acceleration will be disabled.")
 
+# Configurationably cool variables
 data_type = 'multiple' # 'single' or 'multiple'
-save_iter = 10000
+save_iter = 10000 # amount a training iteration between saving checkpoints
+tokenidcount = 256 # 256 for byte-level BPE, can be higher if you want to start with more base tokens (like characters)
 priority = 'gpu' # 'cpu' or 'gpu'
 
 # Set the array library based on priority
@@ -30,31 +33,124 @@ else:
 
 
 
-# --- file config ---
-if data_type == 'multiple':
-    data_dir = os.path.join('training_data', 'text')
-    files = sorted(glob.glob(os.path.join(data_dir, '*.txt')))
-    data = ''
-    for filename in files:
-        with open(filename, 'r', encoding='utf-8') as f:
-            data += f.read()
-            data += '\n' # seperate files
-else:    
-    with open('training_data/text/sample.txt', 'r', encoding='utf-8') as f:
-        data = f.read()
-chars = list(set(data))
-data_size, vocab_size = len(data), len(chars)
-char_to_ix = { ch:i for i,ch in enumerate(chars) }
-ix_to_char = { i:ch for i,ch in enumerate(chars) }
+class BPETokenizer: #tokenizer
+    def __init__(self):
+        self.vocab = {} # Maps token_id -> bytes
+        self.merges = {} # Maps (byte1, byte2) -> new_byte
+        self.inverse_vocab = {} # Maps bytes -> token_id
+
+    def get_stats(self, ids):
+        """Counts frequency of adjacent pairs."""
+        counts = collections.defaultdict(int)
+        for pair in zip(ids, ids[1:]):
+            counts[pair] += 1
+        return counts
+
+    def merge_ids(self, ids, pair, idx):
+        """Replaces all occurrences of 'pair' with new token 'idx'."""
+        newids = []
+        i = 0
+        while i < len(ids):
+            # If not at the last element and matches the pair
+            if i < len(ids) - 1 and ids[i] == pair[0] and ids[i+1] == pair[1]:
+                newids.append(idx)
+                i += 2
+            else:
+                newids.append(ids[i])
+                i += 1
+        return newids
+
+    def train(self, text, vocab_size=5000, verbose=True):
+        """Learns the BPE merges from raw text."""
+        # 1. Start with raw bytes (0-tokenidcount)
+        # This ensures we can handle ANY character, even emojis
+        ids = list(text.encode("utf-8"))
+        num_merges = vocab_size - tokenidcount
+        
+        # Initialize base vocab (0-tokenidcount)
+        self.merges = {} 
+        self.vocab = {idx: bytes([idx]) for idx in range(tokenidcount)}
+        
+        if verbose: print(f"Training BPE... Goal: {vocab_size} tokens")
+
+        for i in range(num_merges):
+            stats = self.get_stats(ids)
+            if not stats:
+                break
+                
+            # find most frequent pair
+            pair = max(stats, key=stats.get)
+            
+            # create new token ID
+            idx = tokenidcount + i
+            
+            # record the merge rule
+            self.merges[pair] = idx
+            self.vocab[idx] = self.vocab[pair[0]] + self.vocab[pair[1]]
+            
+            # apply merge to the training data
+            ids = self.merge_ids(ids, pair, idx)
+            
+            if verbose and (i+1) % 100 == 0:
+                print(f"Merge {i+1}/{num_merges}: {self.vocab[idx]} (Found {stats[pair]} times)")
+
+        self.inverse_vocab = {v: k for k, v in self.vocab.items()}
+        return ids
+
+    def encode(self, text):
+        """converts string to list of integers"""
+        ids = list(text.encode("utf-8"))
+        while len(ids) >= 2:
+            stats = self.get_stats(ids)
+            # find the lowest-index pair that is mergable (order matters!)
+            pair = min(stats, key=lambda p: self.merges.get(p, float("inf")))
+            
+            if pair not in self.merges:
+                break # no more merges possible
+                
+            idx = self.merges[pair]
+            ids = self.merge_ids(ids, pair, idx)
+        return ids
+
+    def decode(self, ids):
+        """Converts List of Integers -> String"""
+        # concatenate all byte sequences and decode utf-8
+        tokens = b"".join(self.vocab[idx] for idx in ids)
+        return tokens.decode("utf-8", errors="replace")
+    
+
+
+# --- BPE SETUP ---
+tokenizer = BPETokenizer()
+# Load ALL text data into one giant string for training the tokenizer
+print("Reading files for BPE training...")
+full_text_data = ""
+files = sorted(glob.glob(os.path.join('training_data', 'text', '*.txt')))
+for filename in files:
+    with open(filename, 'r', encoding='utf-8') as f:
+        full_text_data += f.read() + "\n"
+
+# target_vocab_size: higher = smarter but more RAM
+target_vocab_size = 2000 # 2000 good for testing, 5000+ better
+tokenizer.train(full_text_data, vocab_size=target_vocab_size)
+# updating globals
+# Use the tokenizer's encode method so the same rules apply everywhere
+data = tokenizer.encode(full_text_data)
+vocab_size = len(tokenizer.vocab)
+print(f"Data tokenized! Original chars: {len(full_text_data)} -> Tokens: {len(data)}")
+
+
 
 # Hyperparameters
 hidden_size = 1000 # Size of the "Memory" (neurons)
-seq_length = 30   # How many steps to look back
+seq_length = 30 # How many steps to look back
 learning_rate = 1e-2
 """
 to calculate parameter size, heres a formula
 (neurons squared) + (neurons * vocab_size) + (vocab_size * neurons) + (neurons) + (vocab_size)
 """
+
+
 
 # Load brain weights or make some if they dont exist
 def load_checkpoint(filename="my_rnn_model.npz"):
@@ -70,7 +166,7 @@ def load_checkpoint(filename="my_rnn_model.npz"):
         print(f"Successfully loaded weights from {filename}")
         return True
     except FileNotFoundError:
-        print("No checkpoint found. Starting from scratch.")
+        Warning(f"No checkpoint found at {filename}. Starting from scratch.")
         # Model parameters (weights)
         # Wxh: Input -> Hidden, Whh: Hidden -> Hidden, Why: Hidden -> Output
         Wxh = xp.random.randn(hidden_size, vocab_size) * 0.01
@@ -163,8 +259,8 @@ while True:
         hprev = xp.zeros((hidden_size, 1)) # Reset memory at start of file
         p = 0 # Reset pointer
         
-    inputs = [char_to_ix[ch] for ch in data[p:p+seq_length]]
-    targets = [char_to_ix[ch] for ch in data[p+1:p+seq_length+1]]
+    inputs = data[p:p+seq_length]
+    targets = data[p+1:p+seq_length+1]
 
     # Forward, Backward, Loss
     loss, dWxh, dWhh, dWhy, dbh, dby, hprev = lossFun(inputs, targets, hprev)
@@ -185,7 +281,7 @@ while True:
         x = xp.zeros((vocab_size, 1))
         x[seed_ix] = 1
         h = hprev
-        txt = []
+        predicted_ids = [seed_ix]
         for i in range(200):
             h = xp.tanh(xp.dot(Wxh, x) + xp.dot(Whh, h) + bh)
             y = xp.dot(Why, h) + by
@@ -202,11 +298,11 @@ while True:
             ix = np.random.choice(range(vocab_size), p=p_dist_np)
             x = xp.zeros((vocab_size, 1))
             x[ix] = 1
-            txt.append(ix_to_char[ix])
-            
-        print('----\n' + "".join(txt) + '\n----')
+            predicted_ids.append(ix)
+
+        print('----\n' + tokenizer.decode(predicted_ids) + '\n----')
     
-    if n % save_iter == 0: # OOOUU SAVE YAAAA
+    if n % save_iter == 0: # save
         save_checkpoint("my_rnn_model.npz")
         
     p += seq_length
