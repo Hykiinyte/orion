@@ -64,7 +64,7 @@ class BPETokenizer: #tokenizer
         """Learns the BPE merges from raw text."""
         # 1. Start with raw bytes (0-tokenidcount)
         # This ensures we can handle ANY character, even emojis
-        ids = list(text.encode("utf-8"))
+        ids = list(text.encode("utf-8")) # 67 :D as the kids say
         num_merges = vocab_size - tokenidcount
         
         # Initialize base vocab (0-tokenidcount)
