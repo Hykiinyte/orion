@@ -1,0 +1,17 @@
+Various words of extravagant or exotic spelling are quite uncommon to come by.
+
+Here's quite a unique word: Lexicography.
+Lexicography is the professional practice and academic study of compiling, writing, and editing dictionaries. Its primary purpose is to record, analyze, and define a language's lexicon-including meanings, pronunciations, and usage, making this data accessible to users. It includes both descriptive (recording usage) and prescriptive (guiding usage) approaches.
+
+A lexicon in certain circumstances, such as under English for example, is a letter. In other instances, it may be another written character. Lexicography originated in the 4th millennium BCE with Sumerian word lists on clay tablets. It has evolved from ancient, simple bilingual lists to modern, comprehensive electronic and print dictionaries.
+
+The key components of a dictionary entry include...
+
+The Lemma, or headword, which is simply the word itself.
+The pronunciation, which is the phonetic transcription of the word. Essentially, how it sounds when spoken, and how to speak it.
+The definition, which is the meaning and nuance of the word.
+The etymology, which is the origin of the word.
+Its usage, which is how the word is used in context.
+Finally, contextual information, showing parts of speech, synonyms, register, and dialect.
+
+Today, lexicography is heavily reliant on electronic tools to produce online and mobile apps, with a focus on data accessibility. It is considered a user-centered, independent science focused on data presentation. Not to mention, without it, much of what is known of both ancient, and modern language would not be well known and logged without lexicography and the work that lexicographers take on.
