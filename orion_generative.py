@@ -4,17 +4,21 @@ import glob
 import pdfplumber
 from docx import Document
 import collections
-os.environ["CUDA_PATH"] = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.2\\bin" # path for redundancy
+# os.environ["CUDA_PATH"] = "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.2" #uncomment if you want to set CUDA path manually
 try: # try to use CuPy for gpu accel, otherwise use NumPy for cpu
     import cupy as cp
+    # Test if CuPy can actually access the GPU
+    test_array = cp.array([1, 2, 3])
     cupy_available = True
-except (ImportError, FileNotFoundError):
+    print("[OK] CuPy successfully imported and GPU detected")
+except ImportError as e:
     cp = None
     cupy_available = False
-    if ImportError:
-        Warning("CuPy library not found. GPU acceleration will be disabled.")
-    elif FileNotFoundError:
-        Warning("CuPy installation found but no compatible GPU detected. GPU acceleration will be disabled.")
+    print(f"[ERROR] ImportError: CuPy not installed or invalid. {e}")
+except Exception as e:
+    cp = None
+    cupy_available = False
+    print(f"[ERROR] Error initializing CuPy: {type(e).__name__}: {e}")
 
 # Configurationably cool variables
 data_type = 'multiple' # 'single' or 'multiple'
