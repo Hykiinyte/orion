@@ -1,0 +1,11 @@
+I don't think typing out every piece of training data myself is an effective way to create training data for an Large Language Model, which is a type of AI, however it is ethical in a sense, as a major controversy when it comes to making AI is sourcing the training data which the AI will learn off of. Some see it as a form of theft, where other peoples' work are taken without consent and used to train an AI off of information that they made without credit. Others see more of the "consent" part, and that data and information is being harvested from people and used in "black box" projects without their consent.
+
+In that context, that is why I have resorted to simply producing all of my training data manually, by hand, by myself! I obviously have my own consent to what data of mine goes and doesn't go to training my AI, and I know where the information is going. No personal information of mine is going into some sort of billion dollar system to sell personal information and make data or something wild like that. I also know how my AI works, so its not a "black box" to me.
+
+I also have some friends working on generating the data (as they please, I'm not forcing them) because I, by myself without any help would take a long time to fabricate entire gigabytes of data- that's BILLIONS of words, and I can't type all of that by myself! Well, I guess I could, but I mean so in a reasonable amount of time, and it needs to be grammatically correct and orderly- for the initial training phase at least, but you get the point. Its hard, but I can make it ethical! Doesn't have to be practical, because I'm only doing this once.
+
+I want to make my own personal AI that can assist me in doing things from creating things, to mathematics, to analysis and brainstorming. I think that since the AI is trained almost entirely on me, it would be like having two brains instead of one, and everyone knows that says:
+
+Two heads are better than one!
+
+Two of me would undeniably be very efficient in taking on tasks from everyday activities to mass data analysis, though perhaps no generation. I don't think its great to generate works using AI because its simply just telling a computer to do something rather than actually learning to do some thing yourself, which learning skills is the important part- that is in my opinion!
