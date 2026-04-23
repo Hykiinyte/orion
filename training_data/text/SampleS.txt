@@ -1,0 +1,44 @@
+Algebra is a form of mathematics that has existed for centuries are far back as Ancient Greece, though it has independently emerged in multiple places. Algebra specifically is derived from "Al-Gebra" which is Arabic and finds its origins in the Golden Age of Islam.
+
+The premise of algebra is simple, solving for an unknown value noted in an equation. In modern Algebra, usually these unknown values are denoted using variables, which are letters or Greek characters that represent a numeric value that is subject to change, or is not known. Take this as an example:
+
+David has 7 apples, and Maria and 4 apples. David got his apples from Sam and half of Maria's original stock. How much apples does Same have?
+
+This equation can be rewritten as:
+
+7 = 4 + x
+
+Where 7 represents David's apples, 4 is the amount Maria gave, and "x" is Sam's apples, but we don't know that value. In order to solve, you must do a little bit of manipulation based off of arithmetic and fundamental properties of math. The best and most common way to solve an algebraic equation is to isolate the variable, which in this case is "x". To do that, we see that 4 is on the same side of the equation (denoted by the equal sign) as "x", so to change it to the other side, you must subtract 4 on the variable side to create a net-zero, and subtract 4 on the other side of the equal sign to account for the change of total value in the equation. The equation rewritten is:
+
+7 - 4 = x
+
+This now looks like a more standard, familiar equation, and while you cannot solve the expression "4 - x", you can solve "7 - 4" which equals 3. Therefore, we now know that x = 3, so Sam gave David 3 apples.
+
+This is the most simplest form of algebra, and it can come in all shapes and size- literally. Another more complex example of an algebraic questions is this:
+
+5x + 10 = 35
+
+In order to evaluate this equation, you must find the value of "x" such that the equation will equal 35. The first step is to isolate the variables by negating any loose terms, such as 10, therefore subtract 10 from both sides, and the equation will look like this:
+
+5x = 25
+
+Because 10 - 10 = 0, and 35 - 10 = 25. The next step is to negate the coefficient, which is the numeric term that is multiplied to the variable- in this case it is 5. In order to negate multiplication, you must use division, so you divide by 5 on both sides. 5 / 5 = 1, and 25 / 5 = 5, so the equation is now simplified to this:
+
+x = 5
+
+Since the variable term is now alone and equal to one, non-variable value, we have the value of x which is 5, and the equation is now evaluated.
+
+5(5) + 10 = 35
+
+Due to the unusual nature of variables, here's where shapes come in. As variables represent any possible value, that means on a graph, they are not a point, but rather a line which represents all possible values with regards to an operation between a variable and coefficient, or multiple variables.
+
+Take the example expression "7x". "x" can be any value, and you will get an answer to the expression for any value of x.
+
+7(-2) = -14
+7(-1) = -7
+7(0) = 0
+7(1) = 7
+7(2) = 14
+7(x) = 7x
+
+If these points were graphed onto a Cartesian plane or two-dimensional XY plane, they would create a perfect diagonal line, where any possible point of infinite precision that lays on the line is an answer to any given value of "x" multiplied by 7. Furthermore, these lines extend out infinitely, with exceptions for if the equation has been given graphical bounds such as "x <= 3" in which the line stops at x = 3 since the bounds say "only x values less than or equal to 3", or exceptions where an expression results in an undefined value such as the expression "4 / x" where "x" cannot equal 0, since 4 / 0 is undefined.
