@@ -155,7 +155,7 @@ for filename in files: # support txt, docx, pdf for training data
         continue  # Skip problematic files
 
 # target_vocab_size: higher = smarter but more RAM
-target_vocab_size = 2000 # 2000 good for testing, 5000+ better
+target_vocab_size = 8000 # 2000 good for testing, 5000+ better, 32000 to match GPT-2's vocab size (but takes more time and memory to train)
 tokenizer.train(full_text_data, vocab_size=target_vocab_size)
 # updating globals
 # Use the tokenizer's encode method so the same rules apply everywhere
@@ -166,8 +166,8 @@ print(f"Data tokenized! Original chars: {len(full_text_data)} -> Tokens: {len(da
 
 
 # Hyperparameters
-hidden_size = 1000 # Size of the "Memory" (neurons)
-seq_length = 30 # How many steps to look back
+hidden_size = 2000 # Size of the "Memory" (neurons)
+seq_length = 25 # How many steps to look back
 learning_rate = 1e-2
 """
 to calculate parameter size, heres a formula
