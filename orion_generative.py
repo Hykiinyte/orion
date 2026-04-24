@@ -70,7 +70,7 @@ class BPETokenizer: #tokenizer
         """Learns the BPE merges from raw text."""
         # 1. Start with raw bytes (0-tokenidcount)
         # This ensures we can handle ANY character, even emojis
-        ids = list(text.encode("utf-8")) # 67 as the kids say
+        ids = list(text.encode("utf-8"))
         num_merges = vocab_size - tokenidcount
         
         # Initialize base vocab (0-tokenidcount)
@@ -166,13 +166,15 @@ print(f"Data tokenized! Original chars: {len(full_text_data)} -> Tokens: {len(da
 
 
 # Hyperparameters
-hidden_size = 2000 # Size of the "Memory" (neurons)
-seq_length = 25 # How many steps to look back
+hidden_size = 5000 # Size of the "Memory" (neurons)
+seq_length = 50 # How many steps to look back, higher = more context but more memory and slower training
 learning_rate = 1e-2
 """
 to calculate parameter size, heres a formula
 (neurons squared) + (neurons * vocab_size) + (vocab_size * neurons) + (neurons) + (vocab_size)
 """
+print(f"Model size: {(hidden_size**2 + hidden_size*vocab_size + vocab_size*hidden_size + hidden_size + vocab_size) * 4 / (1024**2):.2f} MB (float32)")
+print(f"Parameters: {hidden_size**2 + hidden_size*vocab_size + vocab_size*hidden_size + hidden_size + vocab_size}")
 
 
 
