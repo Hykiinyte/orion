@@ -42,3 +42,40 @@ Take the example expression "7x". "x" can be any value, and you will get an answ
 7(x) = 7x
 
 If these points were graphed onto a Cartesian plane or two-dimensional XY plane, they would create a perfect diagonal line, where any possible point of infinite precision that lays on the line is an answer to any given value of "x" multiplied by 7. Furthermore, these lines extend out infinitely, with exceptions for if the equation has been given graphical bounds such as "x <= 3" in which the line stops at x = 3 since the bounds say "only x values less than or equal to 3", or exceptions where an expression results in an undefined value such as the expression "4 / x" where "x" cannot equal 0, since 4 / 0 is undefined.
+
+Furthermore, different kinds of algebraic equations form that carry unique patterns or characteristics that can be used to identify them and/or distinguish them from other types of equations. One of the most common forms of an algebraic equation that has been known and solvable since ancient times is the quadratic equation. A quadratic equation takes the formation of:
+
+ax^2 + bx + c = 0
+
+A quadratic has 3 separate terms, typically one squared term, one variable term, and one constant, where terms "b" and "c" can be equal to 0. There are various ways to solve a quadratic, such as a method called "completing the square"- formerly a method in which the terms are represented as the areas or separate rectangles where all terms combined make a square and "x" is the missing area, which finding the value of "x" would allow you to complete the square- in which you fit the expression to the closest perfect square with an amount added or subtracted, as some quadratics like "x^2 + 4x + 4" which is a perfect square, can be factored into (x + 2)(x + 2) or simply (x + 2)^2. As an example, take the following equation:
+
+x^2 + 4x + 7 = 0
+
+This equation is most similar to the standard form of (x + 2)^2, though it's constant when expanded is 4, while the constant of the example equation is 7. Since 7 - 4 = 3, we can add a constant of 3 to the perfect square.
+
+x^2 + 4x + 7 = (x + 2)^2 + 3
+x^2 + 4x + 7 = x^2 + 4x + 4 + 3
+
+However, towards the 8th-9th century, a general method was developed to solve any quadratic, where it was finally solidified in the 1500s and 1600s. This universal method that can solve any quadratic is appropriately called the quadratic formula.
+
+Quadratic form:
+ax^2 + bx + c = 0
+
+General Quadratic formula:
+x = (-b + sqrt(b^2 - 4ac)) / 2a
+x = (-b - sqrt(b^2 - 4ac)) / 2a
+
+Since the quadratic formula has a plus-or-minus symbol, that means that in general- a quadratic can have up to 2 correct answers. This is due to the highest order of the highest term which is "ax^2" in this case determines the maximum amount of answers which is 2, since the highest term is brought to an order of 2.
+
+Example equation:
+x^2 + 4x + 4
+
+Quadratic answers using the formula:
+x = (-4 + sqrt(4^2 - 4(1)(4)) / 2(1)
+x = (-4 - sqrt(4^2 - 4(1)(4)) / 2(1)
+
+We find that x = -2 in both cases. This is simply because the example equation is a perfect square chosen for simplicity. Not all quadratic equations will have the same answer for both addition and subtraction of the square root of the discriminant (the discriminant is b^2 - 4ac), though all quadratic will have at most 2 answers.
+
+This expands to equations of any order, including cubic equation (standardly written presented ax^3 + bx^2 + cx + d), and equations of the higher order like x^4 having up to 4 answers, x^5 having up to 5 answers, and so on.
+
+For the most part, this is these are fundamentals of algebra, which all branched of algebra, including mathematical fields built off of algebra, such as calculus, statistics, computer science, linear algebra, etc.
